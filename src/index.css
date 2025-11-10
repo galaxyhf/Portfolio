@@ -71,20 +71,12 @@ html {
   background: hsl(var(--muted-foreground) / 0.5);
 }
 
-/* reCAPTCHA - Remove borda extra e ajusta ao tema */
-.g-recaptcha {
+/* Cloudflare Turnstile - Ajustes de estilo */
+.cf-turnstile {
   transform-origin: center;
 }
 
-.g-recaptcha > div > div {
-  box-shadow: none !important;
-  border: none !important;
-}
-
-.g-recaptcha iframe {
+.cf-turnstile iframe {
   border: none !important;
   border-radius: 4px;
-}
-bar-thumb:hover {
-  background: hsl(var(--muted-foreground) / 0.5);
 }

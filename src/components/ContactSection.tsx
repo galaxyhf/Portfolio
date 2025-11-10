@@ -11,29 +11,19 @@ import {
   CheckCircle2,
   AlertCircle,
 } from 'lucide-react';
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 import emailjs from '@emailjs/browser';
-import { EMAILJS_CONFIG, RECAPTCHA_SITE_KEY } from '@/lib/emailjs-config';
-import ReCAPTCHA from 'react-google-recaptcha';
-import { useTheme } from 'next-themes';
+import { EMAILJS_CONFIG, TURNSTILE_SITE_KEY } from '@/lib/emailjs-config';
+import Turnstile from 'react-cloudflare-turnstile';
 
 export default function ContactSection() {
-  const { theme } = useTheme();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     message: '',
   });
 
-  const recaptchaRef = useRef<ReCAPTCHA>(null);
-  const [recaptchaTheme, setRecaptchaTheme] = useState<'light' | 'dark'>(
-    'dark'
-  );
-
-  // Atualiza o tema do reCAPTCHA quando o tema do site mudar
-  useEffect(() => {
-    setRecaptchaTheme(theme === 'dark' ? 'dark' : 'light');
-  }, [theme]);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
 
   const [status, setStatus] = useState<{
     type: 'idle' | 'loading' | 'success' | 'error';
@@ -45,20 +35,16 @@ export default function ContactSection() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Verifica reCAPTCHA
-    const recaptchaValue = recaptchaRef.current?.getValue();
-    if (!recaptchaValue) {
+    if (!turnstileToken) {
       setStatus({
         type: 'error',
-        message: 'Por favor, complete o reCAPTCHA.',
+        message: 'Por favor, complete o CAPTCHA.',
       });
       setTimeout(() => {
         setStatus({ type: 'idle', message: '' });
       }, 3000);
       return;
     }
-
     setStatus({ type: 'loading', message: 'Enviando mensagem...' });
 
     try {
@@ -71,7 +57,7 @@ export default function ContactSection() {
           from_email: formData.email,
           message: formData.message,
           to_name: 'Caio Silva', // Seu nome
-          'g-recaptcha-response': recaptchaValue,
+          'cf-turnstile-response': turnstileToken,
         },
         EMAILJS_CONFIG.PUBLIC_KEY
       );
@@ -83,8 +69,8 @@ export default function ContactSection() {
         });
         // Limpa o formulário
         setFormData({ name: '', email: '', message: '' });
-        // Reset reCAPTCHA
-        recaptchaRef.current?.reset();
+        // Reset Turnstile
+        setTurnstileToken(null);
 
         // Remove a mensagem de sucesso após 5 segundos
         setTimeout(() => {
@@ -98,8 +84,8 @@ export default function ContactSection() {
         message:
           'Erro ao enviar mensagem. Tente novamente ou entre em contato pelas redes sociais.',
       });
-      // Reset reCAPTCHA em caso de erro
-      recaptchaRef.current?.reset();
+      // Reset Turnstile em caso de erro
+      setTurnstileToken(null);
 
       // Remove a mensagem de erro após 5 segundos
       setTimeout(() => {
@@ -239,13 +225,13 @@ export default function ContactSection() {
                     />
                   </div>
 
-                  {/* reCAPTCHA */}
+                  {/* Cloudflare Turnstile */}
                   <div className="flex justify-center">
                     <div className="scale-95 sm:scale-100">
-                      <ReCAPTCHA
-                        ref={recaptchaRef}
-                        sitekey={RECAPTCHA_SITE_KEY}
-                        theme={recaptchaTheme}
+                      <Turnstile
+                        turnstileSiteKey={TURNSTILE_SITE_KEY}
+                        callback={(token: string) => setTurnstileToken(token)}
+                        theme="light"
                       />
                     </div>
                   </div>
