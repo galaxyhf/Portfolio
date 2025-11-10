@@ -70,3 +70,21 @@ html {
 ::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--muted-foreground) / 0.5);
 }
+
+/* reCAPTCHA - Remove borda extra e ajusta ao tema */
+.g-recaptcha {
+  transform-origin: center;
+}
+
+.g-recaptcha > div > div {
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.g-recaptcha iframe {
+  border: none !important;
+  border-radius: 4px;
+}
+bar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.5);
+}

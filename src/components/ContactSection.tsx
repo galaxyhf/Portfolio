@@ -11,12 +11,14 @@ import {
   CheckCircle2,
   AlertCircle,
 } from 'lucide-react';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import emailjs from '@emailjs/browser';
 import { EMAILJS_CONFIG, RECAPTCHA_SITE_KEY } from '@/lib/emailjs-config';
 import ReCAPTCHA from 'react-google-recaptcha';
+import { useTheme } from 'next-themes';
 
 export default function ContactSection() {
+  const { theme } = useTheme();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -24,6 +26,14 @@ export default function ContactSection() {
   });
 
   const recaptchaRef = useRef<ReCAPTCHA>(null);
+  const [recaptchaTheme, setRecaptchaTheme] = useState<'light' | 'dark'>(
+    'dark'
+  );
+
+  // Atualiza o tema do reCAPTCHA quando o tema do site mudar
+  useEffect(() => {
+    setRecaptchaTheme(theme === 'dark' ? 'dark' : 'light');
+  }, [theme]);
 
   const [status, setStatus] = useState<{
     type: 'idle' | 'loading' | 'success' | 'error';
@@ -231,11 +241,13 @@ export default function ContactSection() {
 
                   {/* reCAPTCHA */}
                   <div className="flex justify-center">
-                    <ReCAPTCHA
-                      ref={recaptchaRef}
-                      sitekey={RECAPTCHA_SITE_KEY}
-                      theme="dark"
-                    />
+                    <div className="scale-95 sm:scale-100">
+                      <ReCAPTCHA
+                        ref={recaptchaRef}
+                        sitekey={RECAPTCHA_SITE_KEY}
+                        theme={recaptchaTheme}
+                      />
+                    </div>
                   </div>
 
                   <Button
