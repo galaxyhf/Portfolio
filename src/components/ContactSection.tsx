@@ -11,9 +11,10 @@ import {
   CheckCircle2,
   AlertCircle,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import emailjs from '@emailjs/browser';
-import { EMAILJS_CONFIG } from '@/lib/emailjs-config';
+import { EMAILJS_CONFIG, RECAPTCHA_SITE_KEY } from '@/lib/emailjs-config';
+import ReCAPTCHA from 'react-google-recaptcha';
 
 export default function ContactSection() {
   const [formData, setFormData] = useState({
@@ -21,6 +22,8 @@ export default function ContactSection() {
     email: '',
     message: '',
   });
+
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
 
   const [status, setStatus] = useState<{
     type: 'idle' | 'loading' | 'success' | 'error';
@@ -32,6 +35,20 @@ export default function ContactSection() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Verifica reCAPTCHA
+    const recaptchaValue = recaptchaRef.current?.getValue();
+    if (!recaptchaValue) {
+      setStatus({
+        type: 'error',
+        message: 'Por favor, complete o reCAPTCHA.',
+      });
+      setTimeout(() => {
+        setStatus({ type: 'idle', message: '' });
+      }, 3000);
+      return;
+    }
+
     setStatus({ type: 'loading', message: 'Enviando mensagem...' });
 
     try {
@@ -44,6 +61,7 @@ export default function ContactSection() {
           from_email: formData.email,
           message: formData.message,
           to_name: 'Caio Silva', // Seu nome
+          'g-recaptcha-response': recaptchaValue,
         },
         EMAILJS_CONFIG.PUBLIC_KEY
       );
@@ -55,6 +73,8 @@ export default function ContactSection() {
         });
         // Limpa o formulário
         setFormData({ name: '', email: '', message: '' });
+        // Reset reCAPTCHA
+        recaptchaRef.current?.reset();
 
         // Remove a mensagem de sucesso após 5 segundos
         setTimeout(() => {
@@ -68,6 +88,8 @@ export default function ContactSection() {
         message:
           'Erro ao enviar mensagem. Tente novamente ou entre em contato pelas redes sociais.',
       });
+      // Reset reCAPTCHA em caso de erro
+      recaptchaRef.current?.reset();
 
       // Remove a mensagem de erro após 5 segundos
       setTimeout(() => {
@@ -207,6 +229,15 @@ export default function ContactSection() {
                     />
                   </div>
 
+                  {/* reCAPTCHA */}
+                  <div className="flex justify-center">
+                    <ReCAPTCHA
+                      ref={recaptchaRef}
+                      sitekey={RECAPTCHA_SITE_KEY}
+                      theme="dark"
+                    />
+                  </div>
+
                   <Button
                     type="submit"
                     className="w-full group gap-2 cursor-pointer"
@@ -229,14 +260,14 @@ export default function ContactSection() {
                   {/* Status Messages */}
                   {status.type === 'success' && (
                     <div className="flex items-center gap-2 p-4 bg-green-500/10 border border-green-500/20 rounded-lg text-green-600 dark:text-green-400 animate-in fade-in slide-in-from-bottom-2 duration-300">
-                      <CheckCircle2 className="h-5 w-5 flex-shrink-0" />
+                      <CheckCircle2 className="h-5 w-5 shrink-0" />
                       <p className="text-sm">{status.message}</p>
                     </div>
                   )}
 
                   {status.type === 'error' && (
                     <div className="flex items-center gap-2 p-4 bg-red-500/10 border border-red-500/20 rounded-lg text-red-600 dark:text-red-400 animate-in fade-in slide-in-from-bottom-2 duration-300">
-                      <AlertCircle className="h-5 w-5 flex-shrink-0" />
+                      <AlertCircle className="h-5 w-5 shrink-0" />
                       <p className="text-sm">{status.message}</p>
                     </div>
                   )}
