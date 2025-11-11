@@ -12,7 +12,7 @@ export default function SkillsSection() {
       skills: [
         { name: 'HTML5', level: 'Avançado' },
         { name: 'CSS3', level: 'Avançado' },
-        { name: 'JavaScript', level: 'Avançado' },
+        { name: 'JavaScript', level: 'Intermediário' },
         { name: 'TypeScript', level: 'Intermediário' },
       ],
     },
@@ -22,9 +22,9 @@ export default function SkillsSection() {
       color: 'text-purple-500',
       bgColor: 'bg-purple-500/10',
       skills: [
-        { name: 'React', level: 'Avançado' },
+        { name: 'React', level: 'Intermediário' },
         { name: 'Vite', level: 'Intermediário' },
-        { name: 'TailwindCSS', level: 'Avançado' },
+        { name: 'TailwindCSS', level: 'Intermediário' },
       ],
     },
     {
@@ -33,7 +33,8 @@ export default function SkillsSection() {
       color: 'text-green-500',
       bgColor: 'bg-green-500/10',
       skills: [
-        { name: 'Python', level: 'Intermediário' },
+        { name: 'Python', level: 'Básico' },
+        { name: 'Node.js', level: 'Básico' },
         { name: 'PostgreSQL', level: 'Básico' },
       ],
     },

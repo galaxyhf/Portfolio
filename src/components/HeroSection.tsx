@@ -35,18 +35,11 @@ export default function HeroSection({ onExploreClick }: HeroSectionProps) {
               onClick={onExploreClick}
               variant="outline"
               size="lg"
-              className="group gap-2 hover:gap-3 transition-all duration-300"
+              className="group gap-2 hover:gap-3 transition-all duration-300 cursor-pointer"
             >
               Explorar
-              <ArrowDown className="h-4 w-4 group-hover:translate-y-1 transition-transform duration-300" />
+              <ArrowDown className="h-4 w-4 group-hover:translate-y-1 transition-transform duration-300 animate-bounce" />
             </Button>
-          </div>
-
-          {/* Scroll Indicator - Mouse */}
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-            <div className="w-6 h-10 border-2 border-muted-foreground/30 rounded-full flex items-start justify-center p-2">
-              <div className="w-1 h-2 bg-muted-foreground/50 rounded-full animate-pulse" />
-            </div>
           </div>
         </div>
       </div>
