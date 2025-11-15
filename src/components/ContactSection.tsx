@@ -240,7 +240,7 @@ export default function ContactSection() {
                     type="submit"
                     className="w-full group gap-2 cursor-pointer"
                     size="lg"
-                    disabled={status.type === 'loading'}
+                    disabled={status.type === 'loading' || !turnstileToken}
                   >
                     {status.type === 'loading' ? (
                       <>
