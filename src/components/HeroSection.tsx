@@ -1,5 +1,6 @@
 import { ArrowDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import TextType from './TextType';
 
 interface HeroSectionProps {
   onExploreClick: () => void;
@@ -16,12 +17,14 @@ export default function HeroSection({ onExploreClick }: HeroSectionProps) {
           {/* Main Content */}
           <div className="space-y-6 max-w-3xl mx-auto">
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight animate-in fade-in slide-in-from-bottom-4 duration-1000">
-              Caio Silva
+              <TextType
+                text={['Caio Silva', 'Desenvolvedor Web']}
+                typingSpeed={75}
+                pauseDuration={1500}
+                showCursor={true}
+                cursorCharacter="|"
+              />
             </h1>
-
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-medium text-muted-foreground animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-150">
-              Desenvolvedor Web
-            </h2>
 
             <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-300">
               Especializado em criar interfaces modernas e funcionais com foco
